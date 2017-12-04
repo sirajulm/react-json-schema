@@ -35,9 +35,9 @@ var ReactJsonSchema = function () {
         schema.updateComponent = updateFn;
       }
       if (Array.isArray(schema)) {
-        elements = this.parseSubSchemas(schema);
+        elements = this.parseSubSchemas(schema, updateFn);
       } else if (schema) {
-        element = this.createComponent(schema);
+        element = this.createComponent(schema, updateFn);
       }
       return element || elements;
     }
@@ -45,6 +45,7 @@ var ReactJsonSchema = function () {
     key: 'parseSubSchemas',
     value: function parseSubSchemas() {
       var subSchemas = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      var updateFn = arguments[1];
 
       var Components = [];
       var index = 0;
@@ -57,7 +58,7 @@ var ReactJsonSchema = function () {
           var subSchema = _step.value;
 
           subSchema.key = typeof subSchema.key !== 'undefined' ? subSchema.key : index;
-          Components.push(this.parseSchema(subSchema));
+          Components.push(this.parseSchema(subSchema, updateFn));
           index++;
         }
       } catch (err) {
@@ -79,14 +80,14 @@ var ReactJsonSchema = function () {
     }
   }, {
     key: 'createComponent',
-    value: function createComponent(schema) {
+    value: function createComponent(schema, updateFn) {
       var component = schema.component,
           children = schema.children,
           text = schema.text,
           rest = _objectWithoutProperties(schema, ['component', 'children', 'text']);
 
       var Component = this.resolveComponent(schema);
-      var Children = typeof text !== 'undefined' ? text : this.resolveComponentChildren(schema);
+      var Children = typeof text !== 'undefined' ? text : this.resolveComponentChildren(schema, updateFn);
       return (0, _react.createElement)(Component, rest, Children);
     }
   }, {
@@ -109,8 +110,8 @@ var ReactJsonSchema = function () {
     }
   }, {
     key: 'resolveComponentChildren',
-    value: function resolveComponentChildren(schema) {
-      return schema.hasOwnProperty('children') ? this.parseSchema(schema.children) : undefined;
+    value: function resolveComponentChildren(schema, updateFn) {
+      return schema.hasOwnProperty('children') ? this.parseSchema(schema.children, updateFn) : undefined;
     }
   }, {
     key: 'getComponentMap',
