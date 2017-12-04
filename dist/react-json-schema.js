@@ -27,9 +27,13 @@ var ReactJsonSchema = function () {
 
   _createClass(ReactJsonSchema, [{
     key: 'parseSchema',
-    value: function parseSchema(schema) {
+    value: function parseSchema(schema, updateFn) {
       var element = null;
       var elements = null;
+
+      if (updateFn !== undefined && typeof updateFn == 'function') {
+        schema.updateComponent = updateFn;
+      }
       if (Array.isArray(schema)) {
         elements = this.parseSubSchemas(schema);
       } else if (schema) {
