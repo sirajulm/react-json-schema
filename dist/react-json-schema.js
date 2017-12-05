@@ -78,12 +78,13 @@ var ReactJsonSchema = function () {
     value: function createComponent(schema) {
       var component = schema.component,
           children = schema.children,
+          handlers = schema.handlers,
           text = schema.text,
-          rest = _objectWithoutProperties(schema, ['component', 'children', 'text']);
+          rest = _objectWithoutProperties(schema, ['component', 'children', 'handlers', 'text']);
 
       var Component = this.resolveComponent(schema);
       var Children = typeof text !== 'undefined' ? text : this.resolveComponentChildren(schema);
-      return (0, _react.createElement)(Component, rest, Children);
+      return (0, _react.createElement)(Component, Object.assign({}, rest, { handlers: handlers }), Children);
     }
   }, {
     key: 'resolveComponent',
