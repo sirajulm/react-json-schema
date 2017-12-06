@@ -12,6 +12,10 @@ var _reactDomFactories = require('react-dom-factories');
 
 var _reactDomFactories2 = _interopRequireDefault(_reactDomFactories);
 
+var _server = require('react-dom/server');
+
+var _server2 = _interopRequireDefault(_server);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -122,6 +126,12 @@ var ReactJsonSchema = function () {
     key: 'setComponentMap',
     value: function setComponentMap(componentMap) {
       _componentMap.set(this, componentMap);
+    }
+  }, {
+    key: 'getStaticMarkup',
+    value: function getStaticMarkup(schema) {
+      schema.toStaticMarkup = true;
+      return _server2.default.renderToStaticMarkup(this.parseSchema(schema));
     }
   }]);
 
