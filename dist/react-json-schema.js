@@ -31,17 +31,17 @@ var ReactJsonSchema = function () {
 
   _createClass(ReactJsonSchema, [{
     key: 'parseSchema',
-    value: function parseSchema(schema, updateFn) {
+    value: function parseSchema(schema, toStaticMarkup) {
       var element = null;
       var elements = null;
 
-      if (updateFn !== undefined && typeof updateFn == 'function') {
-        schema.updateComponent = updateFn;
+      if (toStaticMarkup) {
+        schema.toStaticMarkup = toStaticMarkup;
       }
       if (Array.isArray(schema)) {
-        elements = this.parseSubSchemas(schema, updateFn);
+        elements = this.parseSubSchemas(schema, toStaticMarkup);
       } else if (schema) {
-        element = this.createComponent(schema, updateFn);
+        element = this.createComponent(schema, toStaticMarkup);
       }
       return element || elements;
     }
@@ -49,7 +49,7 @@ var ReactJsonSchema = function () {
     key: 'parseSubSchemas',
     value: function parseSubSchemas() {
       var subSchemas = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-      var updateFn = arguments[1];
+      var toStaticMarkup = arguments[1];
 
       var Components = [];
       var index = 0;
@@ -62,7 +62,7 @@ var ReactJsonSchema = function () {
           var subSchema = _step.value;
 
           subSchema.key = typeof subSchema.key !== 'undefined' ? subSchema.key : index;
-          Components.push(this.parseSchema(subSchema, updateFn));
+          Components.push(this.parseSchema(subSchema, toStaticMarkup));
           index++;
         }
       } catch (err) {
@@ -84,14 +84,14 @@ var ReactJsonSchema = function () {
     }
   }, {
     key: 'createComponent',
-    value: function createComponent(schema, updateFn) {
+    value: function createComponent(schema, toStaticMarkup) {
       var component = schema.component,
           children = schema.children,
           text = schema.text,
           rest = _objectWithoutProperties(schema, ['component', 'children', 'text']);
 
       var Component = this.resolveComponent(schema);
-      var Children = typeof text !== 'undefined' ? text : this.resolveComponentChildren(schema, updateFn);
+      var Children = typeof text !== 'undefined' ? text : this.resolveComponentChildren(schema, toStaticMarkup);
       return (0, _react.createElement)(Component, rest, Children);
     }
   }, {
@@ -114,8 +114,8 @@ var ReactJsonSchema = function () {
     }
   }, {
     key: 'resolveComponentChildren',
-    value: function resolveComponentChildren(schema, updateFn) {
-      return schema.hasOwnProperty('children') ? this.parseSchema(schema.children, updateFn) : undefined;
+    value: function resolveComponentChildren(schema, toStaticMarkup) {
+      return schema.hasOwnProperty('children') ? this.parseSchema(schema.children, toStaticMarkup) : undefined;
     }
   }, {
     key: 'getComponentMap',
@@ -131,7 +131,7 @@ var ReactJsonSchema = function () {
     key: 'getStaticMarkup',
     value: function getStaticMarkup(schema) {
       schema.toStaticMarkup = true;
-      return _server2.default.renderToStaticMarkup(this.parseSchema(schema));
+      return _server2.default.renderToStaticMarkup(this.parseSchema(schema, schema.toStaticMarkup));
     }
   }]);
 
